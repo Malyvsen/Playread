@@ -16,4 +16,5 @@ def extract_line(plain_text):
 	text = ''
 	if colon + 1 < len(plain_text):
 		text = plain_text[colon + 1 : ]
+	text = text.strip(' \t')
 	return line(char_name = char_name, text = text)

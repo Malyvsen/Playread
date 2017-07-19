@@ -37,10 +37,9 @@ class character:
 	rate = None
 
 	window = None
-	voice_radio_choice = None
+	voice_list = None
 	volume_slider = None
 	rate_slider = None
-
 
 
 	def __init__(self, name = 'UNKNOWN_NAME', voice = None, volume = 0.5, rate = 150):
@@ -53,11 +52,11 @@ class character:
 		self.window.wm_title(name)
 
 		tk.Label(self.window, text = 'Voice').pack()
-		self.voice_radio_choice = tk.IntVar()
-		self.voice_radio_choice.set(next(i for i in range(len(available_voices)) if available_voices[i] == self.voice))
+		self.voice_list = tk.Listbox(self.window, selectmode = tk.SINGLE, width = 64)
 		for curr_voice in range(len(available_voices)):
-			radio = tk.Radiobutton(self.window, text = voice_descriptor(available_voices[curr_voice]), variable = self.voice_radio_choice, value = curr_voice)
-			radio.pack()
+			self.voice_list.insert(curr_voice + 1, voice_descriptor(available_voices[curr_voice]))
+		voice_id = next(i for i in range(len(available_voices)) if available_voices[i] == self.voice)
+		self.voice_list.pack()
 
 		tk.Label(self.window, text = 'Volume').pack()
 		self.volume_slider = tk.Scale(self.window, from_ = 0, to = max_volume_control, orient = tk.HORIZONTAL, length = 480)
@@ -66,12 +65,12 @@ class character:
 
 		tk.Label(self.window, text = 'Speaking rate').pack()
 		self.rate_slider = tk.Scale(self.window, from_ = 50, to = 300, orient = tk.HORIZONTAL, length = 480)
-		self.rate_slider.set(200)
+		self.rate_slider.set(175)
 		self.rate_slider.pack()
 
 
 	def speak(self, text):
-		voice_engine.setProperty('voice', self.voice)
+		voice_engine.setProperty('voice', self.voice.id)
 		voice_engine.setProperty('volume', self.volume)
 		voice_engine.setProperty('rate', self.rate)
 		launch_speak_thread(text)
@@ -80,7 +79,9 @@ class character:
 	def ui_update(self):
 		try:
 			self.window.update()
-			self.voice = available_voices[self.voice_radio_choice.get()]
+			voice_selection = self.voice_list.curselection()
+			if len(voice_selection) > 0:
+				self.voice = available_voices[voice_selection[0]]
 			self.volume = self.volume_slider.get() / max_volume_control
 			self.rate = self.rate_slider.get()
 			return True
