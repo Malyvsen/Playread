@@ -56,6 +56,8 @@ class character:
 		for curr_voice in range(len(available_voices)):
 			self.voice_list.insert(curr_voice + 1, voice_descriptor(available_voices[curr_voice]))
 		voice_id = next(i for i in range(len(available_voices)) if available_voices[i] == self.voice)
+		self.voice_list.selection_set(voice_id)
+		self.voice_list.activate(voice_id)
 		self.voice_list.pack()
 
 		tk.Label(self.window, text = 'Volume').pack()
