@@ -43,6 +43,8 @@ class character:
 
 
 	def __init__(self, name = 'UNKNOWN_NAME', voice = None, volume = 0.5, rate = 150):
+		random.seed(name)
+
 		self.name = name
 		self.voice = voice if voice else random.choice(available_voices)
 		self.volume = volume
@@ -50,6 +52,7 @@ class character:
 
 		self.window = tk.Tk()
 		self.window.wm_title(name)
+		self.window.resizable(width = False, height = False)
 
 		tk.Label(self.window, text = 'Voice').pack()
 		self.voice_list = tk.Listbox(self.window, selectmode = tk.SINGLE, width = 64)
